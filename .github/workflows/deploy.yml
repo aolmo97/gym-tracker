@@ -1,29 +1,26 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # or your default branch name
+    branches: [main]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'  # or your preferred Node.js version
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build
-      run: npm run build  # or your build command
-      
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build  # Adjust this to your build output directory
+      - name: Checkout Main Branch
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.6
+        with:
+          branch: gh-pages # Asegúrate de que esto apunte a la rama 'gh-pages'
+          folder: dist # O la carpeta donde Vite genera los archivos de producción
+          token: ${{ secrets.GITHUB_TOKEN }} # Asegúrate de que GITHUB_TOKEN esté disponible en tus secretos de GitHub
